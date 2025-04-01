@@ -25,9 +25,8 @@ const EmployeeDetailsSchema = new mongoose.Schema({
         type:String,
         required:true 
     },
-    postedLinkedin:{
-        type:Boolean,
-        required:true 
+    posted_linkedin:{
+        type:String,
     },
     date:{
         type:String ,

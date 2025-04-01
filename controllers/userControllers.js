@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken")
 const getUsers = async (req , res)=>{
     try{
         if(req.permission){
-            const userDetails = await User.find({})
+            const userDetails = await User.find({isAdmin:false})
             res.status(200).json({data:userDetails , status:true})
         }else{
             res.status(401).json({msg:"unauthorized user"})
@@ -18,6 +18,7 @@ const getUsers = async (req , res)=>{
 
 const LoginUser = async  (req , res)=>{
     const {username , password} = req.body;
+    console.log(username , password)
     try{
         if(!username || !password){
             throw new Error("All Fields are mandatory")
@@ -45,7 +46,7 @@ const LoginUser = async  (req , res)=>{
 
 const createUser = async (req , res)=>{
     const {username , email , password , isAdmin ,gender} = req.body ;
-    
+    console.log(req.body)
     try{
         if(!username || !email || !password){
             console.log("all fields are mandatory")
@@ -56,9 +57,10 @@ const createUser = async (req , res)=>{
         if(checkUser) return res.status(400).json({msg:"User already exists"})
         if(req.permission){
             bcrypt.hash(password , 10, (err , hashPassowrd)=>{
-                const userDetails = User.create({
+                const userDetails = new User({
                     username , email , password:hashPassowrd , isAdmin , gender
                 })
+                userDetails.save()
                 return res.json({data:userDetails , status:true})
             })
         }else{
@@ -71,12 +73,11 @@ const createUser = async (req , res)=>{
 }
 
 const deleteUsers =  async (req  , res)=>{
-    const {id} = req.params.id ;
-    console.log(req.permission)
+    const id = req.params.id ;
+    console.log(id)
     try{
-
         if(req.permission){
-            const deleteUser = await User.removeOne({_id:id})
+            const deleteUser = await User.deleteOne({_id:id})
             res.status(200).json({data:deleteUser , msg:"user succesfully deleted" , status:true})
         }else{
             res.status(401).json({msg:"unauthorized user"})
