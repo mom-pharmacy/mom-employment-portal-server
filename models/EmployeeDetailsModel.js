@@ -31,6 +31,13 @@ const EmployeeDetailsSchema = new mongoose.Schema({
     date:{
         type:String ,
         required:true
+    },
+    innovativeIdea:{
+        type:String
+    },
+    isEdit:{
+        type:Boolean , 
+        default:false
     }
 })
 

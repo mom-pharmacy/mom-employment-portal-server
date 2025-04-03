@@ -4,12 +4,15 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/UserModel")
 
 const createEmployee = async(req, res) => {
+  const {id} = req.params
     try{
-        const {userId,technicalDesc, nonTechnicalDesc, review, extraCarricular, events, posted_linkedin} = req.body
+        const {technicalDesc, nonTechnicalDesc, review, extraCarricular, events, posted_linkedin , innovativeIdea} = req.body
         const dateNow =  new Date().toISOString().split("T")[0]
+        console.log(dateNow)
         const employee = new Employee({
-            userId,
+            userId:id,
             technicalDesc,
+            innovativeIdea,
             nonTechnicalDesc,
             review,
             extraCarricular,
@@ -26,9 +29,12 @@ const createEmployee = async(req, res) => {
     }
 }
 
+
+
 const getEmployees= async(req, res) => {
     try{
         const employee = await Employee.find()
+        Employee.updateOne({technicalDesc  , nonTechnicalDesc })
         res.status(200).json(employee)
     }catch(error){
         console.error("There is an error:", error)
@@ -37,10 +43,13 @@ const getEmployees= async(req, res) => {
 }
 
 const singleEmployee = async(req, res) => {
+   const {id , date} = req.params
+   const dateNow =  new Date().toISOString().split("T")[0]
+   console.log(dateNow)
     try{
-        const employee = await Employee.findById(req.params.id)
-
+        const employee = await Employee.findOne({userId:id , date:date})
         if(!employee){
+          throw new Error("Data not found")
             return res.status(404).json({message: "Employee not found"})
         }
         res.status(200).json(employee)
@@ -87,4 +96,17 @@ const getUserLearnings = async (req, res) => {
     }
   };
 
-module.exports= {createEmployee, getEmployees, singleEmployee,getUserLearnings}
+  const updateEmployeeDetails = async (req , res)=>{
+    const {id} = req.params;
+    const {technicalDesc, nonTechnicalDesc, review, extraCarricular, events, posted_linkedin , innovativeIdea} = req.body
+    try{
+      const updatedOne = await Employee.findOneAndUpdate({_id: id} ,{technicalDesc , nonTechnicalDesc , review , extraCarricular , events , posted_linkedin , innovativeIdea , isEdit:true});
+      console.log(updatedOne)
+      res.status(200).send(updatedOne)
+    }catch(e){
+      console.log(e)
+      res.status(500).send({msg:"Internal server error"})
+    }
+  }
+
+module.exports= {createEmployee, getEmployees, singleEmployee,getUserLearnings , updateEmployeeDetails}

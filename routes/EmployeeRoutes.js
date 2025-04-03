@@ -7,7 +7,8 @@ const employeeController = require("../controllers/employeeControllers")
 
 router.post('/employeeDetails/:id', employeeController.createEmployee)
 router.get('/employeeDetails', employeeController.getEmployees)
-router.get('/emplyee/:id', employeeController.singleEmployee)
+router.get('/emplyee/:id/:date', employeeController.singleEmployee)
 router.get('/learnings/:id',employeeController.getUserLearnings)
+router.put("/employee/:id" , employeeController.updateEmployeeDetails)
 
 module.exports = router

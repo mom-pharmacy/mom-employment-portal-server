@@ -31,7 +31,7 @@ const LoginUser = async  (req , res)=>{
         bcrypt.compare(password , userDetails.password , (err , result)=>{
             if(err) return res.status(401).json("Invalid credientials")
             if(result){
-                jwt.sign({username:userDetails.username , isAdmin:userDetails.isAdmin} , process.env.SECRET_KEY, (err, token)=>{
+                jwt.sign({userId:userDetails._id , username:userDetails.username , isAdmin:userDetails.isAdmin} , process.env.SECRET_KEY, (err, token)=>{
                     if(err) return res.status(500).json({msg:"error in jwt token" ,err})
                         
                     res.status(200).json({jwtToken:token})
@@ -42,6 +42,16 @@ const LoginUser = async  (req , res)=>{
         res.status(500).json({msg:"Internal server error" ,  e})
     }
    
+}
+
+const getUserDetails = async (req , res)=>{
+    const {id} = req.params ;
+    try{
+        const userDetails = await User.findOne({_id:id})
+        res.status(200).json({data:userDetails})
+    }catch(e){
+        res.status(500).json({msg:"Internal server error"})
+    }
 }
 
 const createUser = async (req , res)=>{
@@ -87,4 +97,4 @@ const deleteUsers =  async (req  , res)=>{
     }    
 }
 
-module.exports = {getUsers , LoginUser , createUser , deleteUsers}
+module.exports = {getUsers , LoginUser , createUser , deleteUsers , getUserDetails}

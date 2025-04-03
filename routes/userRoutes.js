@@ -4,6 +4,7 @@ const userControllers = require("../controllers/userControllers")
 const router = express.Router()
 
 router.get("/user" , verifyAdmin , userControllers.getUsers)
+router.get("/userDetails/:id" , userControllers.getUserDetails)
 
 router.post("/user/login" , userControllers.LoginUser)
 
